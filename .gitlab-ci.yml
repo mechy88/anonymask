@@ -1,0 +1,43 @@
+stages:
+  - test
+
+rspec:
+  stage: test
+  image:
+    name: ruby:3.4.2-alpine3.20
+    pull_policy: if-not-present
+
+  services:
+    - name: alpine/sqlite:3.49.2
+      pull_policy: if-not-present
+
+  before_script:
+    - bundle exec rails db:prepare
+  script:
+    - bundle exec rspec
+
+  artifacts:
+    when: on_success
+    name: "$CI_COMMIT_REF_NAME"
+    expire_in: 1 hour
+    paths:
+      - ./coverage/*
+
+coverage:
+  stage: test
+  image:
+    name: ruby:3.4.2-alpine3.20
+    pull_policy: if-not-present
+
+  needs: [rspec]
+
+  before_script:
+    - apk --update add jq
+  script:
+    - COVERAGE="$(cat ./coverage/.last_run.json | jq .result.line)"
+    - |
+      if [[ "$(echo "$COVERAGE <= 100.0" | bc)" = 1 ]]; then
+        echo "Quota coverage not reached!"
+      else
+        echo "Quota coverage reached!";
+      fi
