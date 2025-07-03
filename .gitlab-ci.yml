@@ -1,17 +1,51 @@
 stages:
+  - build
   - test
+
+variables:
+  BUNDLE_PATH: vendor/bundle
+
+default:
+  tags:
+    - tf-gitlab-runner
+
+build:
+  stage: build
+  image:
+    name: ruby:3.4.2-slim
+    pull_policy: if-not-present
+
+  before_script:
+    - |
+      apt update && apt install -y \
+        build-essential \
+        libssl-dev \
+        libyaml-dev
+    - bundle config set --local path $BUNDLE_PATH
+  script:
+    - bundle install
+
+  artifacts:
+    when: on_success
+    name: "$CI_COMMIT_REF_NAME-gems"
+    expire_in: 1 hour
+    paths:
+      - ./vendor/*
 
 rspec:
   stage: test
   image:
-    name: ruby:3.4.2-alpine3.20
+    name: ruby:3.4.2-slim
     pull_policy: if-not-present
 
   services:
     - name: alpine/sqlite:3.49.2
       pull_policy: if-not-present
 
+  needs: [build]
+
   before_script:
+    - bundle config set --local path $BUNDLE_PATH
     - bundle exec rails db:prepare
   script:
     - bundle exec rspec
@@ -26,13 +60,13 @@ rspec:
 coverage:
   stage: test
   image:
-    name: ruby:3.4.2-alpine3.20
+    name: ruby:3.4.2-slim
     pull_policy: if-not-present
 
   needs: [rspec]
 
   before_script:
-    - apk --update add jq
+    - apt update && apt install -y jq
   script:
     - COVERAGE="$(cat ./coverage/.last_run.json | jq .result.line)"
     - |
