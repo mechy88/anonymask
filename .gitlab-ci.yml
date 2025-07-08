@@ -32,6 +32,17 @@ build:
     paths:
       - ./vendor/*
 
+rubocop:
+  stage: test
+  image:
+    name: ruby:3.4.2-slim
+    pull_policy: if-not-present
+
+  needs: [build]
+
+  script:
+    - bundle exec rubocop --format progress
+
 rspec:
   stage: test
   image:
