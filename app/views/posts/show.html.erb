@@ -1,0 +1,79 @@
+<div class="container py-4">
+  <div class="card shadow-sm mb-4">
+    <div class="card-body">
+      <div class="d-flex justify-content-between align-items-center mb-2">
+        <h1 class="h4 mb-0">
+          <%= @post.title %>
+          <% if @post.user.display_name(Current.user) == "Anonymous" %>
+            <span class="text-muted" style="font-size: 1rem;">👤 Anonymous</span>
+          <% else %>
+            <span class="text-muted" style="font-size: 1rem;"><%= @post.user.username %></span>
+          <% end %>
+        </h1>
+      </div>
+
+      <p class="text-muted mb-3">
+        ⏱️ Posted <%= time_ago_in_words(@post.created_at) %> ago
+      </p>
+
+      <p class="mb-4"><%= @post.content %></p>
+
+      <% if Current.user&.admin? %>
+        <div class="mb-3">
+          <%= status_button(@post) %>
+        </div>
+      <% end %>
+
+      <div class="d-flex gap-3 mb-3">
+        <%= link_to "Back", posts_path, class: "btn btn-outline-primary btn-sm" %>
+
+        <% if can_manage_post?(@post) %>
+          <%= link_to "Edit", edit_post_path(@post), class: "btn btn-outline-warning btn-sm" %>
+          <%= button_to "Delete", @post, method: :delete, data: { turbo_confirm: "Are you sure?" }, class: "btn btn-outline-danger btn-sm" %>
+        <% end %>
+      </div>
+    </div>
+  </div>
+
+  <h2 class="h5 mb-3">Comments</h2>
+
+  <% @post.comments.each do |comment| %>
+    <div class="card mb-3">
+      <div class="card-body">
+        <p class="mb-1">
+          <strong><%= comment.user.display_name(Current.user) %></strong>
+          <span class="text-muted small">· <%= time_ago_in_words(comment.created_at) %> ago</span>
+        </p>
+        <p class="mb-2"><%= comment.content %></p>
+
+        <% if can_manage_comment?(comment) %>
+          <div class="small">
+            <%= link_to "Edit", edit_post_comment_path(@post, comment), class: "text-primary me-2" %>
+            <%= link_to "Delete", post_comment_path(@post, comment), method: :delete, data: { confirm: "Are you sure?" }, class: "text-danger" %>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  <% end %>
+
+  <% if user_signed_in? %>
+    <div class="card mt-4">
+      <div class="card-body">
+        <h3 class="h6 mb-3">Add a comment</h3>
+
+        <%= form_with(model: [@post, @post.comments.build], local: true) do |form| %>
+          <div class="mb-3">
+            <%= form.label :content, class: "form-label" %>
+            <%= form.text_area :content, rows: 3, class: "form-control" %>
+          </div>
+
+          <%= form.submit "Post Comment", class: "btn btn-primary" %>
+        <% end %>
+      </div>
+    </div>
+  <% else %>
+    <p class="text-muted mt-3">
+      Please <%= link_to "log in", root_path, class: "link-primary" %> to leave a comment.
+    </p>
+  <% end %>
+</div>

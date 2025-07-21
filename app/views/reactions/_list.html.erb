@@ -1,0 +1,7 @@
+<%# app/views/reactions/_list.html.erb %>
+<% post.reactions.each do |reaction| %>
+  <span class="me-3">
+    <%= reaction.emoji %>
+    <span class="badge bg-light text-dark"><%= reaction.count %></span>
+  </span>
+<% end %>

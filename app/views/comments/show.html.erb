@@ -1,0 +1,31 @@
+<!-- app/views/comments/show.html.erb -->
+<div class="container mt-4">
+  <div class="row">
+    <div class="col-md-8 offset-md-2">
+      <div class="card shadow-sm p-4">
+
+        <h5 class="card-title text-danger">Are you sure you want to delete your comment?</h5>
+
+        <p class="fw-bold mb-1 text-secondary">
+          <% if @comment.user.present? %>
+            👤 <%= @comment.user.display_name(Current.user) %>:
+          <% else %>
+            👤 Anonymous:
+          <% end %>
+        </p>
+
+        <p class="card-text"><%= @comment.content %></p>
+
+        <p class="text-muted small mb-3">
+          ⏱️ Posted <%= time_ago_in_words(@comment.created_at) %> ago
+        </p>
+
+        <div class="d-flex gap-2">
+          <%= button_to "Yes, delete", post_comment_path(@comment.post, @comment), method: :delete, data: { confirm: "This action cannot be undone." }, class: "btn btn-danger" %>
+          <%= link_to "Cancel", post_path(@comment.post), class: "btn btn-outline-secondary" %>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
