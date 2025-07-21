@@ -1,0 +1,64 @@
+<div class="container mt-5">
+  <div class="text-center my-3 mb-5">
+    <%= image_tag "Logo.png", class: "img-fluid w-25", alt: "Anonymask Logo" %>
+  </div>
+
+  <div class="card shadow-sm mx-auto" style="max-width: 700px; width: 100%;">
+    <div class="card-body">
+      <h2 class="card-title text-center">Sign Up</h2>
+      <p class="text-center text-muted fs-6">Join your team's anonymous feedback platform</p>
+
+      <%= form_with model: @user, url: registration_path, class: "mt-4" do |form| %>
+
+        <% if form.object.errors.any? %>
+          <div class="alert alert-danger">
+            <ul class="mb-0">
+              <% form.object.errors.full_messages.each do |message| %>
+                <li><%= message %></li>
+              <% end %>
+            </ul>
+          </div>
+        <% end %>
+
+        <div class="mb-3">
+          <%= form.label :email, class: "form-label fs-5" %>
+          <%= form.email_field :email, class: "form-control fs-5", placeholder: "Enter your email" %>
+        </div>
+
+        <div class="mb-3">
+          <%= form.label :username, class: "form-label fs-5" %>
+          <%= form.text_field :username, class: "form-control fs-5", placeholder: "Choose a username" %>
+        </div>
+
+        <div class="mb-3">
+          <%= form.label :password, class: "form-label fs-5" %>
+          <%= form.password_field :password, class: "form-control fs-5", placeholder: "Create a password" %>
+        </div>
+
+        <div class="mb-3">
+          <%= form.label :password_confirmation, class: "form-label fs-5" %>
+          <%= form.password_field :password_confirmation, class: "form-control fs-5", placeholder: "Confirm your password" %>
+        </div>
+
+
+        <%# <div class="mb-4"> %>
+          <%# <label class="form-label fs-6 mb-2">Role</label> %>
+          <%# <div class="form-check form-check-inline"> %>
+            <%#= form.radio_button :role, "user", class: "form-check-input", id: "role_user" %>
+            <%#= form.label :role, "User", class: "form-check-label", for: "role_user" %>
+          <%# </div> %>
+          
+          <%# <div class="form-check form-check-inline"> %>
+            <%#= form.radio_button :role, "admin", class: "form-check-input", id: "role_admin" %>
+            <%#= form.label :role, "Admin", class: "form-check-label", for: "role_admin" %>
+          <%# </div> %>
+        <%# </div> %>
+
+        <div class="d-grid gap-2">
+          <%= form.submit "Sign Up", class: "btn btn-dark btn-lg" %>
+        </div>
+      <% end %>
+        <p class="text-center text-muted fs-6 mt-4">Already have an account? <%= link_to "Sign in", new_session_path, class: "text-decoration-none" %></p>
+    </div>
+  </div>
+</div>

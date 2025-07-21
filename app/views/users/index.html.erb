@@ -1,0 +1,32 @@
+<h1 class="text-xl font-bold mb-4">All Users</h1>
+
+<%= link_to 'All Posts', posts_path, class: "text-blue-600 hover:underline mb-4 inline-block" %>
+
+<table class="w-full text-left border-collapse">
+  <thead>
+    <tr>
+      <th class="p-2 border-b">Username</th>
+      <th class="p-2 border-b">Email</th>
+      <th class="p-2 border-b">Role</th>
+      <th class="p-2 border-b">Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @users.each do |user| %>
+      <tr>
+        <td class="p-2 border-b"><%= user.username %></td>
+        <td class="p-2 border-b"><%= user.email %></td>
+        <td class="p-2 border-b"><%= User.roles.key(user.role)&.capitalize || "Unknown" %></td>
+        <td class="p-2 border-b space-x-2">
+          <%= link_to 'Show', user_path(user), class: "text-blue-600 hover:underline" %>
+          <%= link_to 'Edit', edit_user_path(user), class: "text-yellow-600 hover:underline" %>
+          <%= link_to 'Destroy', user_path(user), method: :delete, data: { confirm: "Are you sure?" }, class: "text-red-600 hover:underline" %>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<div class="mt-4">
+  <%= link_to 'Create New User', new_user_path, class: "text-green-600 hover:underline" %>
+</div>

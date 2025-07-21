@@ -1,0 +1,15 @@
+<h1 class="mb-4">Edit Post</h1>
+
+<%= form_with model: @post, local: true do |form| %>
+  <div class="mb-3">
+    <%= form.label :title, class: "form-label fs-4" %>
+    <%= form.text_field :title, class: "form-control fs-5" %>
+  </div>
+
+  <div class="mb-3">
+    <%= form.label :content, class: "form-label fs-4" %>
+    <%= form.text_area :content, class: "form-control fs-5", rows: 5 %>
+  </div>
+
+  <%= form.submit "Update Post", class: "btn btn-dark btn-lg" %>
+<% end %>

@@ -1,0 +1,55 @@
+<%= turbo_frame_tag "reaction_frame_#{post.id}" do %>
+
+<%# Prepare emoji list and count them %>
+<%
+  emoji_list = [
+    emojify("thumbsup"),
+    emojify("heart"),
+    emojify("joy"),
+    emojify("relaxed"),
+    emojify("hushed"),
+    emojify("cry"),
+    emojify("rage")
+  ]
+
+  emoji_counts = emoji_list.map do |emoji|
+    [emoji, reactions.where(reaction: emoji).count]
+  end
+
+  top_emojis = emoji_counts.sort_by { |_, count| -count }.first(3)
+%>
+
+<div style="display: flex; flex-direction: row; gap: 10px;">
+  <div style="display: flex; flex-direction: column; align-items: center;">
+      <p><%=reactions.count%></p>
+    </div>
+  <% top_emojis.each do |emoji, count| %>
+    <div style="display: flex; flex-direction: column; align-items: center;">
+      <p><%= emoji %></p>
+    </div>
+  <% end %>
+</div>
+
+<!-- Reaction Form -->
+<div class="d-flex align-items-center gap-2 mt-3">
+
+  <% model = reaction || Reaction.new %>
+  <% url = reaction ? "/posts/#{post.id}/reactions/#{reaction.id}" : "/posts/#{post.id}/reactions" %>
+  <% method = reaction ? :patch : :post %>
+
+  <%= form_with(model: model, url: url, method: method, class: "d-flex align-items-center gap-2 mb-0") do |form| %>
+    <%= form.select :reaction, emoji_list + [""], { prompt: "React..." }, class: "form-select form-select-sm" %>
+    <%= form.submit emojify("white_check_mark"), class: "btn btn-sm" %>
+  <% end %>
+
+  <% if reaction %>
+    <%= button_to emojify("wastebasket"), post_reaction_path(post_id: post.id, id: reaction.id),
+                  method: :delete,
+                  data: { turbo_confirm: "Are you sure?" },
+                  class: "btn btn-sm",
+                  form_class: "mb-0" %>
+  <% end %>
+</div>
+
+
+<% end %>
