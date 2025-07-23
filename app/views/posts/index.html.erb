@@ -1,20 +1,21 @@
 <div class="container mt-4">
   <div class="row">
     <div class="col-md-8 offset-md-2">
-      <h1 class="mb-4 text-center fw-bold">Posts</h1>
+      <h1 class="mb-4 text-left fw-bold mt-4">Anonymous Feedback</h1>
+      <p class="text-left text-muted fs-6">Share and discuss ideas openly with your team</p>
 
       <% if @posts.empty? %>
-        <div class="card text-center shadow-sm border-0 py-5 px-3 mt-4">
-    <div class="card-body">
-      <div class="display-4 mb-3 text-muted">
-        <%= emojify("memo") %>
+      <div class="card text-center shadow-sm border-0 py-5 px-3 mt-4">
+        <div class="card-body">
+          <div class="display-4 mb-3 text-muted">
+            <%= emojify("memo") %>
+          </div>
+          <h4 class="card-title mb-2 fw-semibold">No posts yet</h4>
+          <p class="card-text text-muted mb-4">
+            Looks like there's nothing here for now. Be the first to <%= link_to "share your thoughts", new_post_path, class: "text-decoration-none" %>!
+          </p>
+        </div>
       </div>
-      <h4 class="card-title mb-2 fw-semibold">No posts yet</h4>
-      <p class="card-text text-muted mb-4">
-        Looks like there's nothing here for now. Be the first to <%= link_to "share your thoughts", new_post_path, class: "text-decoration-none" %>!
-      </p>
-    </div>
-  </div>
       <% else %>
         <div id="posts">
           <% @posts.each do |post| %>

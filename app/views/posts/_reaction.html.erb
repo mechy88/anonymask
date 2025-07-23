@@ -17,6 +17,7 @@
   end
 
   top_emojis = emoji_counts.sort_by { |_, count| -count }.first(3)
+  top_emojis = top_emojis.select {|_, count| count > 0} 
 %>
 
 <div style="display: flex; flex-direction: row; gap: 10px;">

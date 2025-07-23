@@ -1,22 +1,31 @@
 <div class="container py-4">
   <div class="card shadow-sm mb-4">
     <div class="card-body">
-      <div class="d-flex justify-content-between align-items-center mb-2">
+      <div class="d-flex align-items-center mb-2">
         <h1 class="h4 mb-0">
           <%= @post.title %>
-          <% if @post.user.display_name(Current.user) == "Anonymous" %>
-            <span class="text-muted" style="font-size: 1rem;">👤 Anonymous</span>
-          <% else %>
-            <span class="text-muted" style="font-size: 1rem;"><%= @post.user.username %></span>
-          <% end %>
         </h1>
+
+        <%# Author display logic %>
+        <div class="ms-3">
+          <% if @post.user == Current.user %>
+            <span class="badge bg-primary">You</span>
+          <% elsif Current.user&.admin? %>
+            <span class="text-muted" style="font-size: 1rem;"><%= @post.user.username %></span>
+            <% if @post.user.admin? %>
+              <span class="badge bg-danger ms-2">Admin</span>
+            <% end %>
+          <% else %>
+            <span class="text-muted" style="font-size: 1rem;">👤 Anonymous</span>
+          <% end %>
+        </div>
       </div>
 
       <p class="text-muted mb-3">
         ⏱️ Posted <%= time_ago_in_words(@post.created_at) %> ago
       </p>
 
-      <p class="mb-4"><%= @post.content %></p>
+      <p class="mb-4"><%= simple_format(@post.content) %></p>
 
       <% if Current.user&.admin? %>
         <div class="mb-3">
@@ -41,9 +50,21 @@
     <div class="card mb-3">
       <div class="card-body">
         <p class="mb-1">
-          <strong><%= comment.user.display_name(Current.user) %></strong>
+          <strong>
+            <% if comment.user == Current.user %>
+              <span class="badge bg-primary">You</span>
+            <% elsif Current.user&.admin? %>
+              <%= comment.user.username %>
+              <% if comment.user.admin? %>
+                <span class="badge bg-danger ms-2">Admin</span>
+              <% end %>
+            <% else %>
+              👤 Anonymous
+            <% end %>
+          </strong>
           <span class="text-muted small">· <%= time_ago_in_words(comment.created_at) %> ago</span>
         </p>
+
         <p class="mb-2"><%= comment.content %></p>
 
         <% if can_manage_comment?(comment) %>

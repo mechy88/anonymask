@@ -5,17 +5,12 @@
       <%= link_to post.title, post_path(post), class: "text-decoration-none" %>
     </h5>
 
-    <% display_name = post.user.display_name(Current.user) %>
-
-    <% if display_name == "Anonymous" %>
-      <span class="text-muted" style="font-size: 0.875rem;">👤 Anonymous</span>
-    <% elsif post.user.admin? %>
-      <span class="text-muted" style="font-size: 0.875rem;"><%= display_name %></span>
-      <span class="badge bg-danger ms-2">Admin</span>
-    <% elsif post.user == Current.user %>
-      <span class="badge bg-primary" style="font-size: 0.75rem;">You</span>
+    <% if post.user == Current.user %>
+      <!-- Show only the "You" badge -->
+      <span class="badge bg-primary ms-2" style="font-size: 0.75rem;">You</span>
     <% else %>
-      <span class="text-muted" style="font-size: 0.875rem;"><%= display_name %></span>
+      <!-- Everyone else (including admins) sees 👤 Anonymous only -->
+      <span class="text-muted" style="font-size: 0.875rem;">👤 Anonymous</span>
     <% end %>
   </div>
 
@@ -78,12 +73,10 @@
     const truncated = document.getElementById(`truncated-${postId}`);
     const full = document.getElementById(`full-${postId}`);
 
-    if (truncated.style.display === "none") {
-      truncated.style.display = "block";
-      full.style.display = "none";
-    } else {
-      truncated.style.display = "none";
-      full.style.display = "block";
+    if (truncated && full) {
+      const isTruncatedVisible = truncated.style.display !== 'none';
+      truncated.style.display = isTruncatedVisible ? 'none' : 'block';
+      full.style.display = isTruncatedVisible ? 'block' : 'none';
     }
   }
 </script>
