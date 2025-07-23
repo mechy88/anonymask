@@ -16,10 +16,10 @@ class User < ApplicationRecord
   has_many :reactions, dependent: :destroy
   has_many :comments, dependent: :destroy
 
+  # ✅ Updated logic
   def display_name(current_user = nil)
+    return username if admin?                     # Always show admin's username
     return "You" if current_user && self == current_user
-    return username if current_user&.admin?
-
-    "👤 Anonymous"
+    "👤 Anonymous"                                 # Everyone else is anonymous
   end
 end
