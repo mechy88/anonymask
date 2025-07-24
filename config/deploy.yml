@@ -4,6 +4,8 @@ service: anonymask
 # Name of the container image.
 image: mechy88/anonymask
 
+<% require "dotenv"; Dotenv.load(".env") %>
+
 # Deploy to these servers.
 servers:
   web:
